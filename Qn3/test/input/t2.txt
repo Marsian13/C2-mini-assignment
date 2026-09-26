@@ -1,0 +1,8 @@
+set a 5;
+set b 5.5;
+set c $a * $b;
+if ($c > 20) {
+    puts "big";
+} else {
+    puts "small";
+}
