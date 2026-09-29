@@ -3,16 +3,11 @@
   #include <stdlib.h>
   #include <string.h>
   #include "tcl.tab.h"
-
-  /* keep track of line numbers, useful for error messages */
-  int line_num = 1;
 %}
 
 %%
 
-[ \t]+                   ;
-\n                       { line_num++; }
-"//".*                   { /* skip single line comments if any */ }
+[ \t\n]+                   ;
 
 "if"                     { return IF; }
 "else"                   { return ELSE; }
@@ -24,12 +19,9 @@
 "&&"                     { return AND; }
 "||"                     { return OR; }
 
-"$"[a-zA-Z_][a-zA-Z0-9_]* {
-                            yylval.str = strdup(yytext + 1); /* drop the $ */
-                            return VARID; 
-                          }
+"$"[a-zA-Z][a-zA-Z0-9_]* { yylval.str = strdup(yytext + 1); return VARID; }
 
-[a-zA-Z_][a-zA-Z0-9_]*   { yylval.str = strdup(yytext); return ID; }
+[a-zA-Z][a-zA-Z0-9_]*   { yylval.str = strdup(yytext); return ID; }
 [0-9]+\.[0-9]+           { yylval.str = strdup(yytext); return FLOATNUM; }
 
 [0-9]+                   { yylval.str = strdup(yytext); return INTNUM; }
@@ -48,7 +40,7 @@
 "}"                      { return '}'; }
 ";"                      { return ';'; }
 
-.                        { fprintf(stderr, "Unexpected character '%s' on line %d\n", yytext, line_num); }
+.                        ;
 
 %%
 
