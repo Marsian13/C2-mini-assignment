@@ -1,22 +1,16 @@
-/*
- * Qn3: Lexer for the Tcl subset described in the assignment.
- * Tokenizes keywords, identifiers, $variables, numbers, strings and
- * operators, then hands them to the yacc parser (tcl.y).
- */
-
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "tcl.tab.h"
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  #include "tcl.tab.h"
 
-/* keep track of line numbers, useful for error messages */
-int line_num = 1;
+  /* keep track of line numbers, useful for error messages */
+  int line_num = 1;
 %}
 
 %%
 
-[ \t]+                  { /* skip whitespace, keeps generated code readable */ }
+[ \t]+                   ;
 \n                       { line_num++; }
 "//".*                   { /* skip single line comments if any */ }
 
@@ -32,28 +26,14 @@ int line_num = 1;
 
 "$"[a-zA-Z_][a-zA-Z0-9_]* {
                             yylval.str = strdup(yytext + 1); /* drop the $ */
-                            return VARID;
+                            return VARID; 
                           }
 
-[a-zA-Z_][a-zA-Z0-9_]*   {
-                            yylval.str = strdup(yytext);
-                            return ID;
-                          }
+[a-zA-Z_][a-zA-Z0-9_]*   { yylval.str = strdup(yytext); return ID; }
+[0-9]+\.[0-9]+           { yylval.str = strdup(yytext); return FLOATNUM; }
 
-[0-9]+\.[0-9]+           {
-                            yylval.str = strdup(yytext);
-                            return FLOATNUM;
-                          }
-
-[0-9]+                   {
-                            yylval.str = strdup(yytext);
-                            return INTNUM;
-                          }
-
-\"[^\"]*\"                {
-                            yylval.str = strdup(yytext);
-                            return STRING;
-                          }
+[0-9]+                   { yylval.str = strdup(yytext); return INTNUM; }
+\"[^\"]*\"               { yylval.str = strdup(yytext); return STRING; }
 
 "+"                      { return '+'; }
 "-"                      { return '-'; }
@@ -72,4 +52,6 @@ int line_num = 1;
 
 %%
 
-int yywrap(void) { return 1; }
+int yywrap(void) { 
+  return 1; 
+}

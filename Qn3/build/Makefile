@@ -1,4 +1,3 @@
-# Qn3 Makefile
 # Builds the Tcl -> C++ transpiler (tclc) into this build/ directory.
 
 SRC_DIR = ../src
